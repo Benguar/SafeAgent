@@ -1,10 +1,14 @@
 from fastapi import APIRouter,status,HTTPException
 from src.schemas.classes import PromptInput
-
+from policy.module import scan_prompt
 router = APIRouter(
     tags=["prompt_input"]
 )
 
 @router.post('', status_code= status.HTTP_200_OK)
 async def prompt_input(prompt: PromptInput):
+    scan,id = scan_prompt(prompt.prompt)
+    if scan == 'block':
+        #background task for logging  postgres comes here 
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail= f'prompt injection detected violating rule {id}')
     return 'success'

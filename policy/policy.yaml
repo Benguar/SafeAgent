@@ -1,0 +1,10 @@
+version: "1.0"
+metadata:
+  name: "SafeAgent Policy "
+  description: "Rules for prompt injection and sanitization"
+
+block:
+  - name: "prompt_injection"
+    id: 4041
+    pattern: "(?i)(ignore all (previous )? instructions?|system prompt|give admin password)"
+    action: "block"
