@@ -20,7 +20,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest httpx
-
+    - name: Install OPA
+      run: |
+        curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64_static
+        chmod 755 ./opa
+    - name: Start OPA Server
+      run: |
+        ./opa run -s ./policy & 
+        sleep 5
     - name: Run tests with pytest
       run: |
         pytest

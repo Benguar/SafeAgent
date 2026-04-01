@@ -6,5 +6,17 @@ metadata:
 block:
   - name: "prompt_injection"
     id: 4041
-    pattern: "(?i)(ignore all (previous )? instructions?|system prompt|give admin password)"
+    pattern: "ignore\\s+all\\s+(previous)?instructions?"
     action: "block"
+    weight: 1
+  - name: "prompt_injection"
+    id: 4042
+    pattern: "(override)?\\s+system\\s+prompt"
+    action: "block"
+    weight: 1
+  - name: "prompt_injection"
+    id: 4043
+    pattern: "give\\s+(me)?admin\\s+password"
+    action: "block"
+    weight: 1
+  
