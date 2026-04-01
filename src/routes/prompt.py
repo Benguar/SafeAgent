@@ -7,8 +7,8 @@ router = APIRouter(
 
 @router.post('', status_code= status.HTTP_200_OK)
 async def prompt_input(prompt: PromptInput):
-    scan,id = scan_prompt(prompt.prompt)
-    if scan == 'block':
+    scan = await scan_prompt(prompt.prompt)
+    if scan['block'] == True:
         #background task for logging  postgres comes here 
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail= f'prompt injection detected violating rule {id}')
     return 'success'
