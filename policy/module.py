@@ -8,7 +8,7 @@ import asyncio
 
 OPA_URL = "http://localhost:8181/v1/data/safeagent/engine/block_response"
 def remove_symbols(prompt: str):
-    clean_prompt = str.maketrans("04@31$7", "oaaeist")
+    clean_prompt = str.maketrans("04@31$78([5*", "oaaeistbccs0")
     return prompt.lower().translate(clean_prompt)
 # print(remove_symbols('Ign0re @nd 7ex7'))
 async def scan_prompt(prompt: str):

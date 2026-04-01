@@ -13,10 +13,15 @@ block:
     id: 4042
     pattern: "(override)?\\s+system\\s+prompt"
     action: "block"
-    weight: 1
+    weight: 0.9
   - name: "prompt_injection"
     id: 4043
-    pattern: "give\\s+(me)?admin\\s+password"
+    pattern: "(?:show|give)\\s+(me)?admin\\s+password"
+    action: "block"
+    weight: 0.95
+  - name: "prompt_injection"
+    id: 4051
+    pattern: "(?:show|give)(?:\\s+me)?(?:\\s+your)?\\s+(?:databases?|passwords?)"
     action: "block"
     weight: 1
   
