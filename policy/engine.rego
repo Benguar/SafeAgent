@@ -8,7 +8,6 @@ import future.keywords.contains
 default block_prompt := false
 default avg_weight := 0
 default violation_ids := []
-prompt := regex.replace(input.prompt, "[^a-z0-9]", " ")
 deny contains info if {
     some rule in block
     regex.match(rule.pattern,prompt)
