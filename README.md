@@ -1,7 +1,7 @@
 # Here is the  Repository for SafeAgent a multi-layered defense system for AI cognitive firewall
 
 ## project architecture here🏗️:
-    [🏗️View Project Architecture](./docs/architecture.md)
+[🏗️View Project Architecture](./docs/architecture.md)
 
 
 *Progress so far:*
@@ -13,4 +13,7 @@
 
 *up next:*
 - sanitization and detection
+- Redis integration for LLM memory
+- Creating of PostgreSQL database and async logging
+- Creation of PostgreSQL models and integration with FastAPI using SQLAlchemy 2.0 and psycopg3
 - Tool output detection endpoint
