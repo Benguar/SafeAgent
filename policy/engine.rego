@@ -10,7 +10,7 @@ default avg_weight := 0
 default violation_ids := []
 deny contains info if {
     some rule in block
-    regex.match(rule.pattern,prompt)
+    regex.match(rule.pattern, input.prompt)
     info := {
         "id": rule.id,
         "weight": rule.weight

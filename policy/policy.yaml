@@ -6,22 +6,22 @@ metadata:
 block:
   - name: "prompt_injection"
     id: 4041
-    pattern: "(ignore|forget|disregard) all (previous )?instructions?"
+    pattern: "(ignore|forget|disregard) (all )?(the )?(previous |system )?instructions?"
     action: "block"
     weight: 1
   - name: "prompt_injection"
     id: 4042
-    pattern: "(override )? system prompt"
+    pattern: "(override|ignore|forget) (all )?(the )?system prompt(s)?"
     action: "block"
     weight: 0.9
   - name: "prompt_injection"
     id: 4043
-    pattern: "(?:show|give ) (me )?admin password"
+    pattern: "(show|give|tell) (me )?(your )?admin passwords?"
     action: "block"
     weight: 0.95
   - name: "prompt_injection"
     id: 4051
-    pattern: "(?:show|give ) (me )?(your )? (databases?|passwords?)"
+    pattern: "(show|give|tell) (me )?(your )?(databases?|passwords?)"
     action: "block"
     weight: 1
   
