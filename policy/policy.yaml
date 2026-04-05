@@ -25,3 +25,49 @@ block:
     action: "block"
     weight: 1
   
+sanitize:
+  - name: "credit card"
+    id: 5011
+    pattern: "\\b(?:\\d{4}[ -]?){3}\\d{4}\\b|\\b3[47]\\d{2}[ -]?\\d{6}[ -]?\\d{5}\\b"
+    action: "[REDACTED CREDIT CARD]"
+  - name: "password"
+    id: 5021
+    pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    action: "[REDACTED SECRET]"
+  - name: "password"
+    id: 5022
+    pattern: "(?i)(?:password|passwd|pwd|pass)\s*[:=]\s*([^\s]+)"
+    action: "[REDACTED SECRET]"
+  - name: "API key"
+    id: 5031
+    pattern: "(?i)(?:api[_-]?key|secret|token|auth)\s*[:=]\s*([a-zA-Z0-9\-_]{20,})"
+    action: "[REDACTED API KEY]"
+  - name: "API key"
+    id: 5032
+    pattern: "AKIA[0-9A-Z]{16}"
+    action: "[REDACTED AWS  KEY]"
+  - name: "API key"
+    id: 5033
+    pattern: "(ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36}"
+    action: "[REDACTED GITHUB TOKEN]"
+  - name: "API key"
+    id: 5034
+    pattern: "sk_(live|test)_[a-zA-Z0-9]{24}"
+    action: "[REDACTED STRIPE KEY]"
+  - name: "API key"
+    id: 5035
+    pattern: "AIza[0-9A-Za-z\-_]{35}"
+    action: "[REDACTED GOOGLE KEY]"
+  - name: "API key"
+    id: 5035
+    pattern: "sq0(idp|csp)-[0-9A-Za-z\-_]{22,43}"
+    action: "[REDACTED SQUARE KEY]"
+  - name: "email"
+    id: 5041
+    pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    action: "[REDACTED EMAIL]"
+  - name: "ip address"
+    id: 5042
+    pattern: "\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b"
+    action: "[REDACTED IP  ADDRESS]"
+  
