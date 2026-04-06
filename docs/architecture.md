@@ -34,13 +34,13 @@ To reduce latency and improve performance the SDK will:
 ## Prompt Endpoint performance metrics for 50 word prompt:
 - Fastapi request handling time: 0.5ms- 1ms
 - python leetspeak stripping, prompt normalization: 0.2ms
-- request to OPA port: 1ms
+- request to OPA port: 0.1ms
 - OPA rego evaluation time: 1.5ms- 3ms    
 - ML heuristic analysis: 0.5ms- 2ms
 - PII and secret scanning using Regex+ Python: 0.2ms - 0.5ms
 - Redis I/O: 0.5ms- 0.8ms
 
-**Total latency**: 3.7ms - 7.3ms depending on the complexity of the prompt and the number of rules evaluated in ReGo, the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis. but since i am using asyncio.gather to run OPA and ML model concurrently, overall latency will reduce by 0.5 - 1ms
+**Total latency**: 2.8ms - 6.2ms depending on the complexity of the prompt and the number of rules evaluated in ReGo, the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis. but since i am using asyncio.gather to run OPA and ML model concurrently, overall latency will reduce by 0.5 - 1ms
 
 **Throughput**: 312-1348 requests per second depends on the amount of workers
 (this is using the average for best and worst case latency, and is for 1-4 workers, with more workers the throughput will increase)
@@ -48,22 +48,22 @@ To reduce latency and improve performance the SDK will:
 ## RAG/tool output scanning Endpoint performance metrics for 500 word output:
 - Fastapi request handling time: 0.5ms- 1ms
 - Python leetspeak stripping, prompt normalization: 0.5ms - 1.0ms
-- request to OPA port: 1ms
+- request to OPA port: 0.1ms
 - OPA rego evaluation time: 3ms - 5ms
 - ML heuristic analysis: 1ms - 3ms
-- PII and secret scanning using Regex + Python: 0.5ms - 1.5ms
+- PII and secret scanning using Regex + Python using cached re.compile: 0.1ms - 0.5ms
 - Redis I/O: 0.8ms - 1.2ms
 
-**Total latency**: 5.8ms - 11.2ms depending on the complexity of the output and the number of rules evaluated in ReGo, the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis. but since i am using asyncio.gather to run OPA and ML model concurrently, overall latency will reduce by 1-3ms
+**Total latency**: 4.5ms - 9.3ms depending on the complexity of the output and the number of rules evaluated in ReGo, the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis. but since i am using asyncio.gather to run OPA and ML model concurrently, overall latency will reduce by 1-3ms
 
 **Throughput**: 170 - 730 requests per second depends on the amount of workers and the complexity of the output being scanned(this is using the average for best and worst case latency, and is for 1-4 workers, with more workers the throughput will increase)
 
 ## LLM output scanning Endpoint performance metrics for 500 word output:
 - FastApi request handling time: 0.5ms- 1ms
 - ML heuristic analysis: 1ms - 3ms
-- PII and secret scanning using Regex + Python: 0.5ms - 1.5ms
+- PII and secret scanning using Regex + Python: 0.1ms - 0.5ms
 
-**Total latency**: 2ms - 5.5ms depending on the complexity of the output and the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis.
+**Total latency**: 0.6ms - 4.5ms depending on the complexity of the output and the amount of data to be scanned for PII and secrets and the time taken for heuristic analysis.
 
 **Throughput**: 270 - 1070 requests per second depends on the amount of workers and the complexity of the output being scanned.
 
