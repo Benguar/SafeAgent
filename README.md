@@ -12,6 +12,7 @@
 - Testing of various prompt Cases
 
 *up next:*
+- add AsyncClient and YAML loading to api lifespan
 - sanitization and detection
 - Redis integration for LLM memory
 - Creating of PostgreSQL database and async logging
