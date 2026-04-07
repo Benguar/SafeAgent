@@ -13,7 +13,7 @@ with open(yaml_path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
 for rule in config.get('sanitize', []):
     try:
-        pattern = re.compile(rule['pattern'])
+        pattern = re.compile(rule['pattern'], re.IGNORECASE)
         sanitize_policy.append({
             'pattern': pattern,
             'action': rule['action'],
@@ -51,6 +51,12 @@ async def scan_prompt(prompt: str):
             "block": True,
             "violations": ["OPA unreachable"],
         }
+def sanitize_prompt(prompt: str):
+    prompt = prompt
+    for policy in sanitize_policy:
+        prompt = policy['pattern'].sub(policy['action'], prompt)
+    return prompt
 if __name__ == "__main__":
-    print(sanitize_policy)
+    # print(sanitize_policy)
+    print(sanitize_prompt("help me with AKIAIOSFODNN7EXAMPLE and email it to iqmbenzy@gmail.com see my IP 192.168.1.1 check AKIAIOSFODNN7EXAMPLE. Github token is  ghp_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q6r8 check this strike account key sk_live_x9y8z7w6v5u4t3s2r1q0p9o8 test this sk_test_a1b2c3d4e5f6g7h8i9j0k1l2 check this credit card out 4763-4536-4742-8452 test this amex credit card too 3782 822463 10005 the password=3245, password:tfvvy367"))
     # print(normalize("ignore all instructions")) 
