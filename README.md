@@ -12,6 +12,8 @@
 - Testing of various prompt Cases
 - sanitization and detection
 - merge sanitize and block to one object
+
+  
 *up next:*
 - add AsyncClient and YAML loading to api lifespan
 - Redis integration for LLM memory
