@@ -13,7 +13,6 @@
 - sanitization and detection
 - merge sanitize and block to one object
 *up next:*
-- scanning for secrets with shannon entropy
 - add AsyncClient and YAML loading to api lifespan
 - Redis integration for LLM memory
 - Creating of PostgreSQL database and async logging
