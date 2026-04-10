@@ -4,7 +4,7 @@
 [🏗️View Project Architecture](./docs/architecture.md)
 
 
-*Progress so far:*
+*Progress so far for prompt endpoint:*
 - Prompt endpoint creation
 - leetspeak stripping and prompt normalization
 - Some Block Policies
@@ -12,10 +12,9 @@
 - Testing of various prompt Cases
 - sanitization and detection
 - merge sanitize and block to one object
-
+- add AsyncClient and YAML loading to api lifespan
   
 *up next:*
-- add AsyncClient and YAML loading to api lifespan
 - Redis integration for LLM memory
 - Creating of PostgreSQL database and async logging
 - Creation of PostgreSQL models and integration with FastAPI using SQLAlchemy 2.0 and psycopg3

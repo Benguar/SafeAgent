@@ -41,7 +41,7 @@ sanitize:
   - name: "API key"
     id: 5032
     pattern: "akia[0-9a-z]{16}"
-    action: "[REDACTED AWS  KEY]"
+    action: "[REDACTED AWS KEY]"
   - name: "API key"
     id: 5033
     pattern: "(ghp|gho|ghu|ghs|ghr)_[a-z0-9]{36}"

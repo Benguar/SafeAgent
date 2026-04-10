@@ -1,8 +1,12 @@
 import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
-from src.main import app # Import your FastAPI app instance
+from src.main import app, lifespan
+from httpx import AsyncClient, ASGITransport
 
-@pytest.fixture(scope="session")
-def client():
-    with TestClient(app) as c:
-        yield c
+
+@pytest_asyncio.fixture(scope="session")
+async def client():
+    async with lifespan(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            yield ac

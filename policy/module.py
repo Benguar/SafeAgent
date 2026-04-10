@@ -34,7 +34,7 @@ class policy(object):
         prompt = unicodedata.normalize("NFKC",prompt)
         self.prompt = prompt
         return prompt
-    async def scan_prompt(self):
+    async def scan_prompt(self,client=client):
         prompt = self.prompt
         clean_prompt = str.maketrans( "04@31$78([5*+†9", "oaaeistbccsottg")
         cleaned_words = [word.translate(clean_prompt) if re.search(r'[a-z]', word) else word for word in prompt.lower().split()]
@@ -57,7 +57,7 @@ class policy(object):
                 "block": True,
                 "violations": ["OPA unreachable"],
             }
-    def sanitize_prompt(self):
+    def sanitize_prompt(self,sanitize_policy=sanitize_policy):
         prompt = self.prompt
         for policy in sanitize_policy:
             prompt = policy['pattern'].sub(policy['action'], prompt)
