@@ -7,24 +7,7 @@ import asyncio
 import pathlib
 import math
 from collections import Counter
-yaml_path = "policy/policy.yaml"
-sanitize_policy = []
-with open(yaml_path, 'r', encoding='utf-8') as f:
-        config = yaml.safe_load(f)
-for rule in config.get('sanitize', []):
-    try:
-        pattern = re.compile(rule['pattern'], re.IGNORECASE)
-        sanitize_policy.append({
-            'pattern': pattern,
-            'action': rule['action'],
-            'name': rule['name']
-        })
-    except re.error as e:
-        print(e)
 
-
-OPA_URL = "http://localhost:8181/v1/data/safeagent/engine/block_response"
-client = httpx.AsyncClient()
 
 class policy(object):
     def __init__(self, prompt: str):
@@ -34,7 +17,8 @@ class policy(object):
         prompt = unicodedata.normalize("NFKC",prompt)
         self.prompt = prompt
         return prompt
-    async def scan_prompt(self,client=client):
+    async def scan_prompt(self,client):
+        OPA_URL = "http://localhost:8181/v1/data/safeagent/engine/block_response"
         prompt = self.prompt
         clean_prompt = str.maketrans( "04@31$78([5*+†9", "oaaeistbccsottg")
         cleaned_words = [word.translate(clean_prompt) if re.search(r'[a-z]', word) else word for word in prompt.lower().split()]
@@ -57,7 +41,7 @@ class policy(object):
                 "block": True,
                 "violations": ["OPA unreachable"],
             }
-    def sanitize_prompt(self,sanitize_policy=sanitize_policy):
+    def sanitize_prompt(self,sanitize_policy):
         prompt = self.prompt
         for policy in sanitize_policy:
             prompt = policy['pattern'].sub(policy['action'], prompt)
