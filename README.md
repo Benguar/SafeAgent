@@ -14,8 +14,7 @@
 - merge sanitize and block to one object
 - add AsyncClient and YAML loading to api lifespan
 - Creating of PostgreSQL database and async logging
-
+- Creation of PostgreSQL models and integration with FastAPI using SQLAlchemy 2.0 and psycopg3
 *up next:*
 - Redis integration for LLM memory
-- Creation of PostgreSQL models and integration with FastAPI using SQLAlchemy 2.0 and psycopg3
 - Tool output detection endpoint

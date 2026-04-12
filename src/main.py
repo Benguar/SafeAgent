@@ -5,6 +5,7 @@ import httpx
 import re
 import yaml
 import traceback
+from src.db.models import create_table
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
                 print(e)
         app.state.sanitize_policy = sanitize_policy
         app.state.http_client = httpx.AsyncClient()
+        await create_table()
         yield
         await app.state.http_client.aclose()
     except Exception as e:

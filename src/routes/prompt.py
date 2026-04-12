@@ -1,5 +1,6 @@
 from fastapi import APIRouter,status,HTTPException, Request
 from src.schemas.classes import PromptInput
+from src.db.models import Logs
 from policy.module import policy
 import asyncio
 router = APIRouter(
