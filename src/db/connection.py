@@ -10,7 +10,6 @@ try:
     async def get_db():
         async with asyncsession() as session:
             yield session
-    print("success")
 except Exception as e:
     print(f'error is {e}')
 

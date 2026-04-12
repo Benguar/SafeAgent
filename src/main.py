@@ -31,6 +31,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
          print("lifespan broken")
          traceback.print_exc()
+         raise e 
 
 version = 'v1'
 app = FastAPI(

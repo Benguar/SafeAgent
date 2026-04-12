@@ -56,7 +56,6 @@ class policy(object):
         return entropy
     def check_secrets(self):
         self_list = self.prompt.split()
-        print(self_list)
         for i,word in enumerate(self_list):
             if len(word) > 8:
                 score = self.entropy_score(word=word)
