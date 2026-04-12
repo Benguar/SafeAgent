@@ -15,6 +15,8 @@
 - add AsyncClient and YAML loading to api lifespan
 - Creating of PostgreSQL database and async logging
 - Creation of PostgreSQL models and integration with FastAPI using SQLAlchemy 2.0 and psycopg3
+
+
 *up next:*
 - Redis integration for LLM memory
 - Tool output detection endpoint

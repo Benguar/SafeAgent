@@ -55,15 +55,18 @@ class policy(object):
             entropy -= probability * math.log2(probability)
         return entropy
     def check_secrets(self):
+        sanitized_words = []
         self_list = self.prompt.split()
         for i,word in enumerate(self_list):
             if len(word) > 8:
                 score = self.entropy_score(word=word)
                 if len(word) >= 16 and score >= 3.8:
+                        sanitized_words.append(self_list[i])
                         self_list[i] = "[REDACTED SECRET]"
                 elif 8 <= len(word) < 16 and score >= 3.0:
+                    sanitized_words.append(self_list[i])
                     self_list[i] = "[REDACTED SECRET]"
-        return " ".join(self_list)
+        return " ".join(self_list),sanitized_words
 
                 
 if __name__ == "__main__":
