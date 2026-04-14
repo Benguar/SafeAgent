@@ -39,4 +39,4 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.include_router(prompt.router,prefix=f'/{version}/safeagent/prompt')
+app.include_router(prompt.router,prefix=f'/{version}/safeagent/prompt',tags=["prompt_input"])

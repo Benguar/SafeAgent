@@ -11,9 +11,10 @@ class Base(DeclarativeBase):
 class Logs(Base):
     __tablename__ = "sdk_logging"
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True,nullable=False,default=uuid7)
-    user_id: Mapped[int] = mapped_column(nullable=False)
+    user_id: Mapped[str] = mapped_column(nullable=False)
     role: Mapped[str] = mapped_column(nullable=False)
     prompt: Mapped[str] = mapped_column(nullable=False)
+    decision: Mapped[str] = mapped_column(nullable=False)
     violations: Mapped[list] = mapped_column(type_=JSONB,nullable=False,default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 

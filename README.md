@@ -21,4 +21,7 @@
 - Redis integration for LLM memory
 - Tool output detection endpoint
 
-### Created a list of sanitized words the entropy redacts to append into the PostgreSQL for analysis later on. This will help us see and confirm that entropy is working as intended although it has been working as expected so far. This is for development purposes only and will be removed once it is ready to go into production. PS: do not use real secret words in testing phase as they might be logged in database
+### *WARNING⚠️⚠️:* Created a list of sanitized words the entropy redacts to append into the PostgreSQL for analysis later on. This will help us see and confirm that entropy is working as intended although it has been working as expected so far. This is for development purposes only and will be removed once it is ready to go into production. PS: do not use real secret words in testing phase as they might be logged in database
+
+
+

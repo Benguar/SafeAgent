@@ -45,7 +45,11 @@ class policy(object):
         prompt = self.prompt
         for policy in sanitize_policy:
             prompt = policy['pattern'].sub(policy['action'], prompt)
-        return prompt
+        if prompt != self.prompt:
+            decision = "SANITIZE"
+        else:
+            decision = "ALLOW"
+        return prompt,decision
     def entropy_score(self, word):
         length = len(word)
         frequency = Counter(word)

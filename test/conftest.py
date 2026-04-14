@@ -8,7 +8,6 @@ from httpx import AsyncClient, ASGITransport
 
 @pytest_asyncio.fixture(scope="session")
 async def client():
-    with patch("src.main.create_table"):
-        async with lifespan(app):
-            async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-                yield ac
+    async with lifespan(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            yield ac
