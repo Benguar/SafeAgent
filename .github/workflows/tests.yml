@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-        DATABASE_URL: "postgresql+psycopg://benguar:dummypass@localhost/sdk_agent"
+        DATABASE_URL: "postgresql+asyncpg://benguar:dummypass@localhost/sdk_agent"
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
