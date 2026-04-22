@@ -21,6 +21,7 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: 'postgresql+asyncpg://benguar:dummypass@localhost:5432/sdk_agent'
+      OPA_URL: 'http://localhost:8181/v1/data/safeagent/engine/block_response'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

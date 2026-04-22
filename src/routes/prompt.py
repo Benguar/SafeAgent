@@ -21,15 +21,12 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
     scan,(entropy,sanitized_words) = await asyncio.gather(raw_prompt.scan_prompt(client=client), check_entropy)
     print(entropy)
     if scan['block'] == True:
-        # query = await db.execute(insert(Logs).values(**prompt.model_dump(),decision = "BLOCK",violations = scan["violations"]))
-        # await db.commit()
         background_tasks.add_task(log_postgres,prompt,"BLOCK",scan["violations"])
         return JSONResponse(
             status_code= status.HTTP_406_NOT_ACCEPTABLE,
             content = {"detail": f"prompt injection detected violating rule {scan["violations"]}"},
             background=background_tasks
         )
-        # raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail= f'prompt injection detected violating rule {scan["violations"]}')
     raw_prompt = policy(entropy)
     sanitized_prompt,decision = raw_prompt.sanitize_prompt(sanitize_policy=sanitize_policy)
     if len(sanitized_words) > 0 or decision == "SANITIZE":
