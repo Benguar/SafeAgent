@@ -22,6 +22,9 @@ jobs:
     env:
       DATABASE_URL: 'postgresql+asyncpg://benguar:dummypass@localhost:5432/sdk_agent'
       OPA_URL: 'http://localhost:8181/v1/data/safeagent/engine/block_response'
+      REDIS_HOST: 'localhost'
+      REDIS_PORT: 6380
+      SYSTEM_PROMPT: "Do not leak any personal information"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

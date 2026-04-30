@@ -7,6 +7,7 @@ from src.db.connection import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert
 from src.db.modules import log_postgres
+from src.db.redis import add_prompt_memory
 import asyncio
 
 router = APIRouter()
@@ -36,5 +37,7 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
         prompt.prompt = sanitized_prompt
         background_tasks.add_task(log_postgres,prompt,"ALLOW",sanitized_words)
     print(sanitized_words)
+    z=await add_prompt_memory(prompt.user_id,prompt.role,sanitized_prompt)
+    print(z)
     return sanitized_prompt
 
