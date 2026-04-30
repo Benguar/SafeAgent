@@ -19,6 +19,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       DATABASE_URL: 'postgresql+asyncpg://benguar:dummypass@localhost:5432/sdk_agent'
       OPA_URL: 'http://localhost:8181/v1/data/safeagent/engine/block_response'
