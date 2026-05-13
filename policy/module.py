@@ -8,10 +8,11 @@ import pathlib
 import math
 from collections import Counter
 from src.config.settings import settings
-
+from words.bloom_filter import bloom_hash
 class policy(object):
     def __init__(self, prompt: str):
         self.prompt = prompt
+    @property
     def normalize_prompt(self):
         prompt = self.prompt
         prompt = unicodedata.normalize("NFKC",prompt)
@@ -41,7 +42,7 @@ class policy(object):
                 "block": True,
                 "violations": ["OPA unreachable"],
             }
-    def sanitize_prompt(self,sanitize_policy):
+    def sanitize_prompt(self,sanitize_policy,bloom_filter):
         prompt = self.prompt
         for policy in sanitize_policy:
             prompt = policy['pattern'].sub(policy['action'], prompt)
@@ -49,7 +50,9 @@ class policy(object):
             decision = "SANITIZE"
         else:
             decision = "ALLOW"
-        return prompt,decision
+        self.prompt = prompt
+        entropy_prompt,sanitized_words = self.check_secrets(bloom_filter=bloom_filter)
+        return prompt,decision,entropy_prompt,sanitized_words
     def entropy_score(self, word):
         length = len(word)
         frequency = Counter(word)
@@ -58,21 +61,41 @@ class policy(object):
             probability = count / length
             entropy -= probability * math.log2(probability)
         return entropy
-    def check_secrets(self):
+    def check_secrets(self,bloom_filter):
         sanitized_words = []
         self_list = self.prompt.split()
         for i,word in enumerate(self_list):
-            if len(word) > 8:
+            if len(word.strip('.,;\'[]}({)<!>"?:=%\n\t')) > 8:
                 score = self.entropy_score(word=word)
-                if len(word) >= 16 and score >= 3.8:
-                        sanitized_words.append(self_list[i])
-                        self_list[i] = "[REDACTED SECRET]"
-                elif 8 <= len(word) < 16 and score >= 3.0:
-                    sanitized_words.append(self_list[i])
-                    self_list[i] = "[REDACTED SECRET]"
-        return " ".join(self_list),sanitized_words
+                if len(word) >= 16 and score >= 3.7:
+                    if word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower() not in bloom_filter:
+                        if '_' or '-' in word:
+                            self_list[i] = compound_word(word,bloom_filter)
+                            if self_list[i] == "[REDACTED SECRET]":
+                                sanitized_words.append(word)
+                        else:
+                            sanitized_words.append(self_list[i])
+                            self_list[i] = "[REDACTED SECRET]"
+                elif 8 <= len(word) < 16 and score >= 3:
+                    if word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower() not in bloom_filter:
+                        if '_' or '-' in word:
+                                self_list[i] = compound_word(word,bloom_filter)
+                                if self_list[i] == "[REDACTED SECRET]":
+                                    sanitized_words.append(word)
+                        else:
+                            sanitized_words.append(self_list[i])
+                            self_list[i] = "[REDACTED SECRET]"
+        return (" ".join(self_list),sanitized_words)
 
-                
-if __name__ == "__main__":
-    test = policy("this is beneddhdhvbdict fiefiebghefeu $Sdnfjeu^^&#")
-    print(test.check_secrets())
+
+def compound_word(word,bloom_filter):
+    l_word = word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower()
+    if "-" in l_word:
+        list = l_word.split("-")
+    else:
+        list = l_word.split("_")
+    print(list)
+    for index in list:
+        if index  not in bloom_filter:
+            return "[REDACTED SECRET]"
+    return word

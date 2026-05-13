@@ -6,6 +6,8 @@ import re
 import yaml
 import traceback
 from src.db.models import create_table
+from rbloom import Bloom
+from words.bloom_filter import bloom_hash
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -23,8 +25,10 @@ async def lifespan(app: FastAPI):
                 })
             except re.error as e:
                 print(e)
+        app.state.bloom_filter = Bloom.load("words/words.bloom", hash_func= bloom_hash)
         app.state.sanitize_policy = sanitize_policy
-        app.state.http_client = httpx.AsyncClient()
+        limits = httpx.Limits(keepalive_expiry=120.0)
+        app.state.http_client = httpx.AsyncClient(limits=limits)
         await create_table()
         yield
         await app.state.http_client.aclose()
@@ -40,3 +44,4 @@ app = FastAPI(
 )
 
 app.include_router(prompt.router,prefix=f'/{version}/safeagent/prompt',tags=["prompt_input"])
+app.include_router(tool_output.router,prefix=f'/{version}/safeagent/tool_output',tags=["tool_output"])

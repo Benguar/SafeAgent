@@ -15,9 +15,3 @@ async def add_prompt_memory(id,role,prompt):
     await prompt_telemetry.rpush(
     id,json_data
     )
-        # id=id,
-        # role=role,
-        # system_prompt=settings.SYSTEM_PROMPT,
-        # prompt=prompt,
-        # time=datetime.now(timezone.utc)
-    return "success"

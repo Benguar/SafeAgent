@@ -32,7 +32,7 @@ sanitize:
     action: "[REDACTED CREDIT CARD]"
   - name: "password"
     id: 5022
-    pattern: "(?:password|passwd|pwd|pass)\\s*[:=-]\\s*([^\\s]+)"
+    pattern: "\\b(?:password|passwords|passwd|pwd|pass)\\s*(?:is|are|[:=-])\\s*([^\\s]+)"
     action: "[REDACTED SECRET]"
   - name: "API key"
     id: 5031
