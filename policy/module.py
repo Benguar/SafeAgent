@@ -65,21 +65,22 @@ class policy(object):
         sanitized_words = []
         self_list = self.prompt.split()
         for i,word in enumerate(self_list):
-            if len(word.strip('.,;\'[]}({)<!>"?:=%\n\t')) > 8:
+            stripped_word = word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower()
+            if len(stripped_word) > 8:
                 score = self.entropy_score(word=word)
-                if len(word) >= 16 and score >= 3.7:
-                    if word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower() not in bloom_filter:
+                if len(stripped_word) >= 16 and score >= 3.7:
+                    if stripped_word not in bloom_filter:
                         if '_' or '-' in word:
-                            self_list[i] = compound_word(word,bloom_filter)
+                            self_list[i] = compound_word(word,stripped_word,bloom_filter)
                             if self_list[i] == "[REDACTED SECRET]":
                                 sanitized_words.append(word)
                         else:
                             sanitized_words.append(self_list[i])
                             self_list[i] = "[REDACTED SECRET]"
-                elif 8 <= len(word) < 16 and score >= 3:
-                    if word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower() not in bloom_filter:
+                elif 8 <= len(stripped_word) < 16 and score >= 3:
+                    if stripped_word not in bloom_filter:
                         if '_' or '-' in word:
-                                self_list[i] = compound_word(word,bloom_filter)
+                                self_list[i] = compound_word(word,stripped_word,bloom_filter)
                                 if self_list[i] == "[REDACTED SECRET]":
                                     sanitized_words.append(word)
                         else:
@@ -88,12 +89,11 @@ class policy(object):
         return (" ".join(self_list),sanitized_words)
 
 
-def compound_word(word,bloom_filter):
-    l_word = word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower()
-    if "-" in l_word:
-        list = l_word.split("-")
+def compound_word(word,stripped_word,bloom_filter):
+    if "-" in stripped_word:
+        list = stripped_word.split("-")
     else:
-        list = l_word.split("_")
+        list = stripped_word.split("_")
     print(list)
     for index in list:
         if index  not in bloom_filter:
