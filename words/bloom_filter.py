@@ -12,4 +12,5 @@ for index in languages:
             bf.add(word)
             count+=1
 bf.save("words/words.bloom")
-print(count)
+if __name__ == "__main__":
+    print(count)
