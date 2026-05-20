@@ -60,6 +60,7 @@ class policy(object):
         for count in frequency.values():
             probability = count / length
             entropy -= probability * math.log2(probability)
+        
         return entropy
     def check_secrets(self,bloom_filter):
         sanitized_words = []
