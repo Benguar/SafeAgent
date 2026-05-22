@@ -89,15 +89,15 @@ def check_numbers(word: str):
     elif split_word.lower() in bloom_filter:
         return 0
     print([split_word,consistency])
-    return 100    
-print(check_numbers("$3.5million"))
+    return 100, consistency/len(word)    
+print(check_numbers("$Dgye6890"))
 
-if __name__ == "__main__":
-    print(check_numbers('$3.5million'))
-    num = 500
-    t = time.time
-    while num >0:
-        entropy_score('$3.5million')
-        num -=1
-    print(time.time()-t)
-print("3444.44".strip('.,;\'[]}({)<!>"?:=%\n\t'))
+# if __name__ == "__main__":
+#     print(check_numbers('$3.5million'))
+#     num = 500
+#     t = time.time
+#     while num >0:
+#         entropy_score('$3.5million')
+#         num -=1
+#     print(time.time()-t)
+# print("3444.44".strip('.,;\'[]}({)<!>"?:=%\n\t'))
