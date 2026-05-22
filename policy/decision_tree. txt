@@ -1,0 +1,26 @@
+[Word in Prompt]
+  │
+  ├─► [Len <= 8] ─────────────────────────────────────────────────────────────► (ALLOW)
+  │
+  └─► [Len > 8] ──► Calculate Entropy Score
+                      │
+                      ├─► [Low Entropy] ──────────────────────────────────────► (ALLOW)
+                      │   (Len 8-15 & Score < 3) OR (Len 16+ & Score < 3.7)
+                      │
+                      └─► [High Entropy]
+                            │
+                            ├─► [In Bloom Filter] ──(Yes)─────────────────────► (ALLOW)
+                            │
+                            └─► [In Bloom Filter] ──(No)
+                                  │
+                                  ├─► [Has '_' or '-'] ──(Yes)──► compound_word()
+                                  │                                 │
+                                  │                                 ├─► Parts in Bloom? ──(Yes)──► (ALLOW)
+                                  │                                 │
+                                  │                                 └─► Parts in Bloom? ──(No)───► check_numbers() ──► (REDACT / ALLOW)
+                                  │
+                                  └─► [Has '_' or '-'] ──(No)───► check_numbers()
+                                                                    │
+                                                                    ├─► >50% Digits? ─────(Yes)──► (ALLOW)
+                                                                    │
+                                                                    └─► >50% Digits? ─────(No)───► (REDACT)
