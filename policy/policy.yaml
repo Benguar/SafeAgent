@@ -28,7 +28,7 @@ block:
 sanitize:
   - name: "credit card"
     id: 5011
-    pattern: "\\b(?:\\d{4}[ -]?){3}\\d{4}\\b|\\b3[47]\\d{2}[ -]?\\d{6}[ -]?\\d{5}\\b"
+    pattern: "\\b(?:\\d{4}[ _-]?){3}\\d{4}\\b|\\b3[47]\\d{2}[ _-]?\\d{6}[ _-]?\\d{5}\\b"
     action: "[REDACTED CREDIT CARD]"
   - name: "password"
     id: 5022
