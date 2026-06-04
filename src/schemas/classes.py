@@ -9,3 +9,5 @@ class ToolInput(BaseModel):
     tool_call_id: str
     name: str
     content: str
+class FinalOutput(BaseModel):
+    output: str

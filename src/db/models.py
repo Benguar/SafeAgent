@@ -18,12 +18,19 @@ class Prompt_logs(Base):
     violations: Mapped[list] = mapped_column(type_=JSONB,nullable=False,default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 class Tool_logs(Base):
-    __tablename__ = "tool_logging"
+    __tablename__ = "tool_output_logging"
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True,nullable=False,default=uuid7)
     role: Mapped[str] = mapped_column(nullable=False)
     tool_call_id: Mapped[str] = mapped_column(nullable=False)
     name: Mapped[str] = mapped_column(nullable=False)
     content: Mapped[str] = mapped_column(nullable=False)
+    decision: Mapped[str] = mapped_column(nullable=False)
+    violations: Mapped[list] = mapped_column(type_=JSONB,nullable=False,default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
+class Final_output_logs(Base):
+    __tablename__ = "final_output_logging"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True,nullable=False,default=uuid7)
+    output: Mapped[str] = mapped_column(nullable=False)
     decision: Mapped[str] = mapped_column(nullable=False)
     violations: Mapped[list] = mapped_column(type_=JSONB,nullable=False,default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())

@@ -94,7 +94,7 @@ class policy(object):
                         else:
                             #if a word is not a compound word and is not in the bloom filter this is used to check if the word is a valid number 
                             check_numbers_result = check_numbers(word,stripped_word,bloom_filter)
-                            print(word, check_numbers_result)
+                            # print(word, check_numbers_result)
                             if check_numbers_result == "[REDACTED SECRET]":
                                 sanitized_words.append(self_list[i])
                                 self_list[i] = "[REDACTED SECRET]"
@@ -102,6 +102,7 @@ class policy(object):
 
 
 def check_numbers(word: str,stripped_word: str, bloom_filter):
+    print(word)
     """This is used to count the number of consecutive integers in a string the dic is coming from count . It is used to fix shannon entropy redacting valid integers numbers bug e.g $3.5million $12345.78606"""
     count = 0
     not_int = 0 #this is to track consistency in words. I am going to use this to give a buffer 
@@ -126,7 +127,7 @@ def check_numbers(word: str,stripped_word: str, bloom_filter):
     if consistency/len(stripped_word) > 0.5:
         return word
     elif (split_word != "") and (split_word in bloom_filter) and (consistency != 0):
-        print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
+        # print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
         return word
     return "[REDACTED SECRET]"
 

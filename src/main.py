@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from src.routes import prompt,output,tool_output
+from src.routes import final_output, prompt,tool_output
 import httpx
 import re
 import yaml
@@ -45,3 +45,4 @@ app = FastAPI(
 
 app.include_router(prompt.router,prefix=f'/{version}/safeagent/prompt',tags=["prompt_input"])
 app.include_router(tool_output.router,prefix=f'/{version}/safeagent/tool_output',tags=["tool_output"])
+app.include_router(final_output.router,prefix=f'/{version}/safeagent/final_output',tags=["final_output"])
