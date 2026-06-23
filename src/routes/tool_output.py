@@ -23,7 +23,7 @@ async def tool_output(output: ToolInput,request: Request,background_task: Backgr
     async with asyncio.TaskGroup() as tg:
       sanitize_task = tg.create_task(asyncio.to_thread(content.sanitize_prompt, sanitize_policy=sanitize_policy, bloom_filter=bloom_filter))
     regex_sanitize,regex_decision,sanitized_document,sanitized_words  = sanitize_task.result()
-    final_content = "<RAG Document>"+sanitized_document+"</RAG Document>"
+    final_content = f'<RAG Document> {sanitized_document} </RAG Document>'
     if regex_decision == "SANITIZE" or len(sanitized_words) > 0:
        decision = "SANITIZE"
     else:
