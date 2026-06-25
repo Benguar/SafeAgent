@@ -2,6 +2,7 @@
 
 ## project architecture here🏗️:
 [🏗️View Project Architecture](./docs/architecture.md)
+[🏗️View Performance Architecture](./performance.png)
 
 
 *Progress so far for prompt endpoint:*

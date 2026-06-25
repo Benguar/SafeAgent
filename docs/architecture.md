@@ -2,10 +2,10 @@
 
 This project is a  multi layered defense middleware system for AI cognitive firewall, designed to enhance the security and robustness of AI systems against various threats and attacks. The repository includes the following components:
 
-## Tweaks in architecture will be updated soon ⌛
+
 ## Tech Stack⚙️:
 
-### Python, FastAPI, scikit-learn, Yaml, Redis, Docker, Rego, LangGraph, Hugging Face, PostgreSQL, Stremlit.
+### Python, FastAPI, scikit-learn, Yaml, Redis, Docker, Rego, LangGraph, Hugging Face, PostgreSQL, Stremlit, Bloom filters.
 
 
 1. **Prompt Scanning**: This endpoint is responsible for analyzing and filtering incoming prompts to identify potential threats or malicious instructions. We use Yaml Based Rules to scan for prompt injection attacks, which can be used to manipulate the behavior of AI systems. The prompt scanning module helps to ensure that only safe and legitimate prompts are processed by the AI system. After scanning of the prompt, we use a scikit-learn trained model for heuristic analysis to further evaluate the safety of the prompt, this acts as a safety net to catch prompt injection attacks  that is not in the policy. This combination of rule-based scanning and machine learning allows for a more comprehensive defense against prompt injection attacks. If safe, we then check for  contents that can be redacted  in the prompt such as PII leaks and to prevent DLP and if found, we sanitize the prompt to remove any potentially content that could contain sensitive information before adding to LLM memory and logging it 
@@ -21,6 +21,9 @@ This project is a  multi layered defense middleware system for AI cognitive fire
 The SDK will be designed to be centralized,modular and composable and can be easily integrated with various AI systems, providing a unified interface for security and defense mechanisms. It will also be designed to be flexible and customizable, allowing users to configure rules, policies, and thresholds according to their specific needs and requirements.
 
 The SDK will be designed to be lightweight, efficient, performant and scalable to handle large volumes of prompts and outputs without causing significant latency or performance issues.
+
+To Prevent Shannon Entropy False Positives:
+- Used Bloom filters with a compilation of English words for checks and verification that flagged words are not real english words
 
 To reduce latency and improve performance the SDK will:
 - Leverage on FastAPI asynchronous capabilities to handle multiple requests concurrently and efficiently.
