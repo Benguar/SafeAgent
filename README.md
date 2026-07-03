@@ -21,6 +21,8 @@
 - Tool output detection endpoint
 - prompt output endpoint to ensure LLM does not spit out sensitive information
 - Injection and Jailbreak dataset cleaned and ready for ML
+
+
 *up next:*
 - Train logistic regression algorithm to catch more prompt injection and jailbreak attempts
 - creating UDS for OPA and API
