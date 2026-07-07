@@ -20,7 +20,7 @@ class policy(object):
     async def scan_prompt(self,client):
         OPA_URL = settings.OPA_URL
         prompt = self.prompt
-        clean_prompt = str.maketrans( "04@31$78([5*+†9", "oaaeistbccsottg")
+        clean_prompt = str.maketrans( "04@31$78([5*+†9€", "oaaeistbccsottge")
         cleaned_words = [word.translate(clean_prompt) if re.search(r'[a-z]', word) else word for word in prompt.lower().split()]
         prompt = ' '.join(cleaned_words)
         prompt = re.sub(r'[^a-z0-9]', ' ', prompt)
