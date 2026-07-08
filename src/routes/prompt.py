@@ -8,6 +8,7 @@ from sqlalchemy import insert
 from src.db.modules import log_prompt
 from src.db.redis import add_prompt_memory
 import asyncio
+from ml_model.function import ml_scan
 router = APIRouter()
 #changed to taskgroup
 @router.post('', status_code=status.HTTP_200_OK)
@@ -18,24 +19,30 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
     raw_prompt = policy(prompt.prompt)
     raw_prompt.normalize_prompt
     async with asyncio.TaskGroup() as tg:
+        ml_score = tg.create_task(asyncio.to_thread(ml_scan,prompt.prompt))
         sanitize_task = tg.create_task(asyncio.to_thread(raw_prompt.sanitize_prompt, sanitize_policy=sanitize_policy, bloom_filter=bloom_filter))
         scan_task = tg.create_task(raw_prompt.scan_prompt(client=client))
     regex_sanitize,regex_decision,sanitized_prompt,sanitized_words  = sanitize_task.result()
     scan = scan_task.result()
+    ml_score = ml_score.result()
     # print(entropy)
     if scan['block'] == True:
-        background_tasks.add_task(log_prompt,prompt,"BLOCK",scan["violations"])
+        decision = "BLOCK"
+        background_tasks.add_task(log_prompt,prompt,decision,scan["violations"],ml_score)
         return JSONResponse(
             status_code= status.HTTP_406_NOT_ACCEPTABLE,
             content = {"detail": f"prompt injection detected violating rule {scan["violations"]}"},
             background=background_tasks
         )
+    if ml_score > 0.9:
+        decision = "BLOCK"
+        background_tasks.add_task(log_prompt,prompt,["FLAGGED"],decision,ml_score)
     if len(sanitized_words) > 0 or regex_decision == "SANITIZE":
         decision = "SANITIZE"
     else:
         decision = "ALLOW"
     prompt.prompt = sanitized_prompt
-    background_tasks.add_task(log_prompt,prompt,decision,sanitized_words)
+    background_tasks.add_task(log_prompt,prompt,decision,sanitized_words,ml_score)
     #serves as memory write tool example
     redis_write =await add_prompt_memory(prompt.user_id,prompt.role,sanitized_prompt)
     return sanitized_prompt

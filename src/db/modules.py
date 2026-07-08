@@ -8,9 +8,9 @@ import asyncio
 
 
 
-async def log_prompt(value: PromptInput,decision: str,violations: list):
+async def log_prompt(value: PromptInput,decision: str,violations: list,ml_score: int):
     async with asyncsession() as db:
-        query = await db.execute(insert(Prompt_logs).values(**value.model_dump(),decision = decision,violations = violations))
+        query = await db.execute(insert(Prompt_logs).values(**value.model_dump(),decision = decision,violations = violations, ml_score = ml_score))
         await db.commit()
 async def log_tool_output(value: ToolInput,decision:str,violations: list):
     async with asyncsession() as db:

@@ -2,7 +2,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
+import joblib
 import time
 times = time.time()
 
@@ -21,3 +22,5 @@ model.fit(prompt_train_vector,weight_train)
 prediction = model.predict(prompt_test_vector)
 print(classification_report(weight_test, prediction, target_names=['legitimate', 'injection']))
 
+joblib.dump(model,'ml_model/model.pkl')
+joblib.dump(vectorizer, 'ml_model/vectorizer.pkl')
