@@ -16,7 +16,7 @@ class Prompt_logs(Base):
     prompt: Mapped[str] = mapped_column(nullable=False)
     decision: Mapped[str] = mapped_column(nullable=False)
     violations: Mapped[list] = mapped_column(type_=JSONB,nullable=False,default=list)
-    ml_score: Mapped[int] = mapped_column(nullable=False)
+    ml_score: Mapped[float] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),server_default=func.now())
 class Tool_logs(Base):
     __tablename__ = "tool_output_logging"

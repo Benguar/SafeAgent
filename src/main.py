@@ -8,6 +8,7 @@ import traceback
 from src.db.models import create_table
 from rbloom import Bloom
 from words.bloom_filter import bloom_hash
+import joblib
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -25,6 +26,8 @@ async def lifespan(app: FastAPI):
                 })
             except re.error as e:
                 print(e)
+        app.state.model = joblib.load("ml_model/model.pkl")
+        app.state.vectorizer = joblib.load("ml_model/vectorizer.pkl")
         app.state.bloom_filter = Bloom.load("words/words.bloom", hash_func= bloom_hash)
         app.state.sanitize_policy = sanitize_policy
         limits = httpx.Limits(keepalive_expiry=120.0)

@@ -16,27 +16,36 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
     client = request.app.state.http_client
     sanitize_policy = request.app.state.sanitize_policy
     bloom_filter = request.app.state.bloom_filter
+    model = request.app.state.model
+    vectorizer = request.app.state.vectorizer
     raw_prompt = policy(prompt.prompt)
     raw_prompt.normalize_prompt
     async with asyncio.TaskGroup() as tg:
-        ml_score = tg.create_task(asyncio.to_thread(ml_scan,prompt.prompt))
+        ml_score = tg.create_task(asyncio.to_thread(ml_scan,prompt.prompt,model=model,vectorizer=vectorizer))
         sanitize_task = tg.create_task(asyncio.to_thread(raw_prompt.sanitize_prompt, sanitize_policy=sanitize_policy, bloom_filter=bloom_filter))
         scan_task = tg.create_task(raw_prompt.scan_prompt(client=client))
     regex_sanitize,regex_decision,sanitized_prompt,sanitized_words  = sanitize_task.result()
     scan = scan_task.result()
-    ml_score = ml_score.result()
+    ml_score = ml_score.result() * 100
     # print(entropy)
     if scan['block'] == True:
+
         decision = "BLOCK"
         background_tasks.add_task(log_prompt,prompt,decision,scan["violations"],ml_score)
+        print(ml_score)
         return JSONResponse(
             status_code= status.HTTP_406_NOT_ACCEPTABLE,
             content = {"detail": f"prompt injection detected violating rule {scan["violations"]}"},
             background=background_tasks
         )
-    if ml_score > 0.9:
+    if ml_score > 90:
         decision = "BLOCK"
         background_tasks.add_task(log_prompt,prompt,["FLAGGED"],decision,ml_score)
+        return JSONResponse(
+            status_code= status.HTTP_406_NOT_ACCEPTABLE,
+            content = {"detail": f"prompt injection {ml_score}% injection score"},
+            background=background_tasks
+        )
     if len(sanitized_words) > 0 or regex_decision == "SANITIZE":
         decision = "SANITIZE"
     else:

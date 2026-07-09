@@ -21,13 +21,13 @@
 - Tool output detection endpoint
 - prompt output endpoint to ensure LLM does not spit out sensitive information
 - Injection and Jailbreak dataset cleaned and ready for ML
-
+- Train logistic regression algorithm to catch more prompt injection and jailbreak attempts
 
 *up next:*
-- Train logistic regression algorithm to catch more prompt injection and jailbreak attempts
 - creating UDS for OPA and API
+- create frontend
 
-- create frontend 
+
 ### *WARNING⚠️⚠️:* Created a list of sanitized words the entropy redacts to append into the PostgreSQL for analysis later on. This will help us see and confirm that entropy is working as intended although it has been working as expected so far. This is for development purposes only and will be removed once it is ready to go into production. PS: do not use real secret words in testing phase as they might be logged in database
 
 

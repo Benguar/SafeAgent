@@ -134,7 +134,7 @@ async def test_safe_prompt(mock_log_postgres,client,safe_prompt):
 @patch("src.routes.prompt.log_prompt")
 async def test_sanitization(mock_log_postgres,client):
     mock_log_postgres.return_value = None
-    prompt = "help me with AKIAIOSFODNN7EXAMPLE and email it to iqmbenzy@gmail.com see my IP 192.168.1.1 check AKIAIOSFODNN7EXAMPLE. Github token is  ghp_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q6r8 check this stripe account key sk_live_x9y8z7w6v5u4t3s2r1q0p9o8 test this sk_test_a1b2c3d4e5f6g7h8i9j0k1l2 check this credit card out 4763-4536-4742-8452 test this amex credit card too 3782 822463 10005 the password=3245, password:tfvvy367 also this is $Dgye6890. Take it as another pass"
+    prompt = "help me with AKIAIOSFODNN7EXAMPLE and email it to iqmbenzy@gmail.com see my IP 192.168.1.1 check AKIAIOSFODNN7EXAMPLE. Github token is  ghp_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q6r8 check this stripe account key sk_live_x9y8z7w6v5u4t3s2r1q0p9o8 test this sk_test_a1b2c3d4e5f6g7h8i9j0k1l2 check this credit card out 4763-4536-4742-8452 test this amex credit card too 3782 822463 10005 the password=3245, password:tfvvy367 also this is $Dgye6890#zz. Take it as another pass"
     response = await client.post(
         url='/v1/safeagent/prompt',
         json={
