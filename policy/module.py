@@ -66,12 +66,12 @@ class policy(object):
         sanitized_words = []
         self_list = self.prompt.split()
         for i,word in enumerate(self_list):
-            stripped_word = word.strip('.,;\'[]}({)<!>"?:=%\n\t').lower()
+            stripped_word = word.strip('.,;\'[]}({)<!>"?:=%\n\t$€').lower()
             if len(stripped_word) > 8:
                 score = self.entropy_score(word=word)
                 if len(stripped_word) >= 16 and score >= 3.7:
                     if stripped_word not in bloom_filter:
-                        if '_' in word or '-' in word:
+                        if '_' in word or '-' in word or ',' in word or '.' in word:
                             #this is used to check is any redacted word is a compound word so we can check each word in it
                             self_list[i] = compound_word(word,stripped_word,bloom_filter)
                             if self_list[i] == "[REDACTED SECRET]":
@@ -102,9 +102,9 @@ class policy(object):
 
 
 def check_numbers(word: str,stripped_word: str, bloom_filter):
-    print(word)
+    print(word+"     This word is checked")
     """This is used to count the number of consecutive integers in a string the dic is coming from count . It is used to fix shannon entropy redacting valid integers numbers bug e.g $3.5million $12345.78606"""
-    count = 0
+    count = 0 #this is to track most recurring numbers
     not_int = 0 #this is to track consistency in words. I am going to use this to give a buffer 
     consistency = 0
     split_word = ' '
@@ -122,25 +122,49 @@ def check_numbers(word: str,stripped_word: str, bloom_filter):
             if count > consistency: #this is to make sure it does not overwrite the most consistent number count
                 consistency = count
             count = 0
+    ratio_of_consistency_to_word = consistency/len(word)
+    print(consistency,len(word),split_word)
     if count > consistency:
         consistency = count
-    if consistency/len(stripped_word) > 0.5:
+    if ratio_of_consistency_to_word > 0.5:
         return word
-    elif (split_word != "") and (split_word in bloom_filter) and (consistency != 0):
+    elif (split_word != "") and (len(split_word)>=3) and (split_word in bloom_filter) and (consistency != 0) and (ratio_of_consistency_to_word > 0.1):
         # print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
         return word
     return "[REDACTED SECRET]"
 
-def compound_word(word,stripped_word,bloom_filter):
-    """This is used to check each word in a compound word in the bloom filter if it is valid"""
-    if "-" in stripped_word:
-        word_list = stripped_word.split("-")
-    else:
-        word_list = stripped_word.split("_")
-    # print(list)
+def compound_word(original_word,stripped_word,bloom_filter):
+    """This is used to check each word in a compound word in the bloom filter if it is valid. Ir also checks for words joined with full stop or comma without space e.g end.now , cake,butter,yam"""
+    # print(word)
+    word_list = word_splitter(stripped_word)
+    double_check = True
+    while double_check:
+        no_sub_list = True
+        for index,word in enumerate(word_list):
+            if '_' in word or '-' in word or ',' in word or '.' in word:
+                sub_word_list = word_splitter(word)
+                word_list.extend(sub_word_list)
+                no_sub_list = False
+                del(word_list[index])
+        if no_sub_list:
+            double_check = False 
+    print(word_list)
+    # print(word)
     for index in word_list:
         if index  not in bloom_filter:
             check_numbers_result = check_numbers(word,stripped_word,bloom_filter) #check if every word in the valid compound word is a valid number(for words in not in the bloom filter originally)
             if check_numbers_result == "[REDACTED SECRET]":
                 return "[REDACTED SECRET]"
-    return word
+    # print(word)
+    return original_word
+
+def word_splitter(stripped_word: str):
+    if "-" in stripped_word:
+        word_list = stripped_word.split("-")
+    elif "_" in stripped_word:
+        word_list = stripped_word.split("_")
+    elif "." in stripped_word:
+        word_list = stripped_word.split(".")
+    elif ',' in stripped_word:
+        word_list = stripped_word.split(",")
+    return word_list

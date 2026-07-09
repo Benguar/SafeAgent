@@ -107,25 +107,103 @@ from collections import Counter
 # #     print(time.time()-t)
 # # print("3444.44".strip('.,;\'[]}({)<!>"?:=%\n\t'))
 
-def entropy_score_1(word):
-        """This is used to calculate the entropy score"""
-        length = len(word)
-        frequency = Counter(word)
-        entropy = 0.0
-        for count in frequency.values():
-            probability = count / length
-            entropy -= probability * math.log2(probability)
-        print(entropy)
+# def entropy_score_1(word):
+#         """This is used to calculate the entropy score"""
+#         length = len(word)
+#         frequency = Counter(word)
+#         entropy = 0.0
+#         for count in frequency.values():
+#             probability = count / length
+#             entropy -= probability * math.log2(probability)
+#         print(entropy)
 
-#my shannon entropy 
-def entropy_score( word):
-        """This is used to calculate the entropy score"""
-        length = len(word)
-        frequency = Counter(word)
-        print(frequency)
-        print(len(frequency))
-        entropy = len(frequency)/len(word)* math.log2(len(frequency))
-        print(entropy,'\n\n')
-entropy_score('qwertyuiq')
-entropy_score_1('qwertyuiq')
-# print(len({'ben':3,'same':'fff','fff': 4}))
+# #my shannon entropy 
+# def entropy_score( word):
+#         """This is used to calculate the entropy score"""
+#         length = len(word)
+#         frequency = Counter(word)
+#         print(frequency)
+#         print(len(frequency))
+#         entropy = len(frequency)/len(word)* math.log2(len(frequency))
+#         print(entropy,'\n\n')
+# entropy_score('qwertyuiq')
+# entropy_score_1('qwertyuiq')
+# # print(len({'ben':3,'same':'fff','fff': 4}))
+# print(t'this is a t string')
+# ll = [1,2,3,4,5,6,7,4,5,6,7]
+# new_l = [x*2 if x>2 else x-2 for x in ll]
+# # print(new_l)
+
+# z = "bjfiw jwnviownov wngoiwnoginw wngoiiwng".split(" ")
+# word = " ".join(z)
+# ll += z
+# print(ll,word)
+def check_numbers(word: str,stripped_word: str, bloom_filter):
+    print(word+"     This word is checked")
+    """This is used to count the number of consecutive integers in a string the dic is coming from count . It is used to fix shannon entropy redacting valid integers numbers bug e.g $3.5million $12345.78606"""
+    count = 0 #this is to track most recurring numbers
+    not_int = 0 #this is to track consistency in words. I am going to use this to give a buffer 
+    consistency = 0
+    split_word = ' '
+    for index in stripped_word:
+        if index.isdigit():
+            not_int = 0 
+            count += 1
+            if count != 0: #this is to make sure that consistency cleans the split word (this should likely not be here)
+              split_word = ''
+        else:
+            split_word += index
+            not_int += 1
+            if not_int < 2:
+                continue
+            if count > consistency: #this is to make sure it does not overwrite the most consistent number count
+                consistency = count
+            count = 0
+    ratio_of_consistency_to_word = consistency/len(word)
+    print(consistency,len(word),split_word)
+    if count > consistency:
+        consistency = count
+    if ratio_of_consistency_to_word > 0.5:
+        return word
+    elif (split_word != "") and (len(split_word)>=3) and (split_word in bloom_filter) and (consistency != 0) and (ratio_of_consistency_to_word > 0.1):
+        # print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
+        return word
+    return "[REDACTED SECRET]"
+
+def compound_word(word,stripped_word=None,bloom_filter= None):
+    """This is used to check each word in a compound word in the bloom filter if it is valid. Ir also checks for words joined with full stop or comma without space e.g end.now , cake,butter,yam"""
+    word_list = word_splitter(word)
+    double_check = True
+    while double_check:
+        no_sub_list = True
+        for index,word in enumerate(word_list):
+            if '_' in word or '-' in word or ',' in word or '.' in word:
+                print(word,index)
+                sub_word_list = word_splitter(word)
+                word_list.extend(sub_word_list)
+                no_sub_list = False
+                del(word_list[index])
+        if no_sub_list:
+            double_check = False
+                
+        
+    print(word_list)
+#     for index in word_list:
+#         if index  not in bloom_filter:
+#             check_numbers_result = check_numbers(word,stripped_word,bloom_filter) #check if every word in the valid compound word is a valid number(for words in not in the bloom filter originally)
+#             if check_numbers_result == "[REDACTED SECRET]":
+#                 return "[REDACTED SECRET]"
+#     return word
+
+def word_splitter(stripped_word: str):
+    if "-" in stripped_word:
+        word_list = stripped_word.split("-")
+    elif "_" in stripped_word:
+        word_list = stripped_word.split("_")
+    elif "." in stripped_word:
+        word_list = stripped_word.split(".")
+    elif ',' in stripped_word:
+        word_list = stripped_word.split(",")
+    return word_list
+
+print(compound_word("cake-boy,yam.dog"))
