@@ -15,7 +15,7 @@ async def test_valid_prompt(mock_log_postgres,client):
         }
     )
     assert response.status_code == 200
-    assert response.json() == prompt
+    assert response.json()["prompt"] == prompt
 
 @patch("src.routes.prompt.log_prompt")
 async def test_invalid_prompt(mock_log_postgres,client):
@@ -141,7 +141,7 @@ async def test_sanitization(mock_log_postgres,client):
             "prompt": prompt
         }
     )
-    assert response.json() == "help me with [REDACTED AWS KEY] and email it to [REDACTED EMAIL] see my IP [REDACTED IP ADDRESS] check [REDACTED AWS KEY]. Github token is [REDACTED GITHUB TOKEN] check this stripe account key [REDACTED STRIPE KEY] test this [REDACTED STRIPE KEY] check this credit card out [REDACTED CREDIT CARD] test this amex credit card too [REDACTED CREDIT CARD] the [REDACTED SECRET] [REDACTED SECRET] also this is [REDACTED SECRET] Take it as another pass"
+    assert response.json()["prompt"] == "help me with [REDACTED AWS KEY] and email it to [REDACTED EMAIL] see my IP [REDACTED IP ADDRESS] check [REDACTED AWS KEY]. Github token is [REDACTED GITHUB TOKEN] check this stripe account key [REDACTED STRIPE KEY] test this [REDACTED STRIPE KEY] check this credit card out [REDACTED CREDIT CARD] test this amex credit card too [REDACTED CREDIT CARD] the [REDACTED SECRET] [REDACTED SECRET] also this is [REDACTED SECRET] Take it as another pass"
 
 @patch("src.routes.tool_output.log_tool_output")
 async def test_tool_output(mock_log_postgres,client):

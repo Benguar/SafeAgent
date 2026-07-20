@@ -6,5 +6,6 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     SYSTEM_PROMPT: str
+    GEMINI_API_KEY: str
     model_config = SettingsConfigDict(env_file='.env')
 settings = Settings()

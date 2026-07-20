@@ -10,7 +10,7 @@ from src.db.redis import add_prompt_memory
 import asyncio
 from ml_model.function import ml_scan
 router = APIRouter()
-#changed to taskgroup
+
 @router.post('', status_code=status.HTTP_200_OK)
 async def prompt_input(prompt: PromptInput, request: Request,background_tasks: BackgroundTasks):
     client = request.app.state.http_client
@@ -35,7 +35,7 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
         print(ml_score)
         return JSONResponse(
             status_code= status.HTTP_406_NOT_ACCEPTABLE,
-            content = {"detail": f"prompt injection detected violating rule {scan["violations"]}"},
+            content = {"block": True,"prompt": "BLOCKED","detail": f"prompt injection detected violating rule {scan["violations"]}"},
             background=background_tasks
         )
     if ml_score > 90:
@@ -43,7 +43,7 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
         background_tasks.add_task(log_prompt,prompt,["FLAGGED"],decision,ml_score)
         return JSONResponse(
             status_code= status.HTTP_406_NOT_ACCEPTABLE,
-            content = {"detail": f"prompt injection {ml_score}% injection score"},
+            content = {"block": True,"prompt": "BLOCKED","detail": f"prompt injection {ml_score}% injection score"},
             background=background_tasks
         )
     if len(sanitized_words) > 0 or regex_decision == "SANITIZE":
@@ -53,5 +53,5 @@ async def prompt_input(prompt: PromptInput, request: Request,background_tasks: B
     prompt.prompt = sanitized_prompt
     background_tasks.add_task(log_prompt,prompt,decision,sanitized_words,ml_score)
     #serves as memory write tool example
-    redis_write =await add_prompt_memory(prompt.user_id,prompt.role,sanitized_prompt)
-    return sanitized_prompt
+    # redis_write =await add_prompt_memory(prompt.user_id,prompt.role,sanitized_prompt) 
+    return {'block':False,'prompt': sanitized_prompt}

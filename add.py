@@ -138,72 +138,111 @@ from collections import Counter
 # word = " ".join(z)
 # ll += z
 # print(ll,word)
-def check_numbers(word: str,stripped_word: str, bloom_filter):
-    print(word+"     This word is checked")
-    """This is used to count the number of consecutive integers in a string the dic is coming from count . It is used to fix shannon entropy redacting valid integers numbers bug e.g $3.5million $12345.78606"""
-    count = 0 #this is to track most recurring numbers
-    not_int = 0 #this is to track consistency in words. I am going to use this to give a buffer 
-    consistency = 0
-    split_word = ' '
-    for index in stripped_word:
-        if index.isdigit():
-            not_int = 0 
-            count += 1
-            if count != 0: #this is to make sure that consistency cleans the split word (this should likely not be here)
-              split_word = ''
-        else:
-            split_word += index
-            not_int += 1
-            if not_int < 2:
-                continue
-            if count > consistency: #this is to make sure it does not overwrite the most consistent number count
-                consistency = count
-            count = 0
-    ratio_of_consistency_to_word = consistency/len(word)
-    print(consistency,len(word),split_word)
-    if count > consistency:
-        consistency = count
-    if ratio_of_consistency_to_word > 0.5:
-        return word
-    elif (split_word != "") and (len(split_word)>=3) and (split_word in bloom_filter) and (consistency != 0) and (ratio_of_consistency_to_word > 0.1):
-        # print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
-        return word
-    return "[REDACTED SECRET]"
+# def check_numbers(word: str,stripped_word: str, bloom_filter):
+#     print(word+"     This word is checked")
+#     """This is used to count the number of consecutive integers in a string the dic is coming from count . It is used to fix shannon entropy redacting valid integers numbers bug e.g $3.5million $12345.78606"""
+#     count = 0 #this is to track most recurring numbers
+#     not_int = 0 #this is to track consistency in words. I am going to use this to give a buffer 
+#     consistency = 0
+#     split_word = ' '
+#     for index in stripped_word:
+#         if index.isdigit():
+#             not_int = 0 
+#             count += 1
+#             if count != 0: #this is to make sure that consistency cleans the split word (this should likely not be here)
+#               split_word = ''
+#         else:
+#             split_word += index
+#             not_int += 1
+#             if not_int < 2:
+#                 continue
+#             if count > consistency: #this is to make sure it does not overwrite the most consistent number count
+#                 consistency = count
+#             count = 0
+#     ratio_of_consistency_to_word = consistency/len(word)
+#     print(consistency,len(word),split_word)
+#     if count > consistency:
+#         consistency = count
+#     if ratio_of_consistency_to_word > 0.5:
+#         return word
+#     elif (split_word != "") and (len(split_word)>=3) and (split_word in bloom_filter) and (consistency != 0) and (ratio_of_consistency_to_word > 0.1):
+#         # print([stripped_word,split_word,consistency,len(word),consistency/len(word)])
+#         return word
+#     return "[REDACTED SECRET]"
 
-def compound_word(word,stripped_word=None,bloom_filter= None):
-    """This is used to check each word in a compound word in the bloom filter if it is valid. Ir also checks for words joined with full stop or comma without space e.g end.now , cake,butter,yam"""
-    word_list = word_splitter(word)
-    double_check = True
-    while double_check:
-        no_sub_list = True
-        for index,word in enumerate(word_list):
-            if '_' in word or '-' in word or ',' in word or '.' in word:
-                print(word,index)
-                sub_word_list = word_splitter(word)
-                word_list.extend(sub_word_list)
-                no_sub_list = False
-                del(word_list[index])
-        if no_sub_list:
-            double_check = False
+# def compound_word(word,stripped_word=None,bloom_filter= None):
+#     """This is used to check each word in a compound word in the bloom filter if it is valid. Ir also checks for words joined with full stop or comma without space e.g end.now , cake,butter,yam"""
+#     word_list = word_splitter(word)
+#     double_check = True
+#     while double_check:
+#         no_sub_list = True
+#         for index,word in enumerate(word_list):
+#             if '_' in word or '-' in word or ',' in word or '.' in word:
+#                 print(word,index)
+#                 sub_word_list = word_splitter(word)
+#                 word_list.extend(sub_word_list)
+#                 no_sub_list = False
+#                 del(word_list[index])
+#         if no_sub_list:
+#             double_check = False
                 
         
-    print(word_list)
-#     for index in word_list:
-#         if index  not in bloom_filter:
-#             check_numbers_result = check_numbers(word,stripped_word,bloom_filter) #check if every word in the valid compound word is a valid number(for words in not in the bloom filter originally)
-#             if check_numbers_result == "[REDACTED SECRET]":
-#                 return "[REDACTED SECRET]"
-#     return word
+#     print(word_list)
+# #     for index in word_list:
+# #         if index  not in bloom_filter:
+# #             check_numbers_result = check_numbers(word,stripped_word,bloom_filter) #check if every word in the valid compound word is a valid number(for words in not in the bloom filter originally)
+# #             if check_numbers_result == "[REDACTED SECRET]":
+# #                 return "[REDACTED SECRET]"
+# #     return word
 
-def word_splitter(stripped_word: str):
-    if "-" in stripped_word:
-        word_list = stripped_word.split("-")
-    elif "_" in stripped_word:
-        word_list = stripped_word.split("_")
-    elif "." in stripped_word:
-        word_list = stripped_word.split(".")
-    elif ',' in stripped_word:
-        word_list = stripped_word.split(",")
-    return word_list
+# def word_splitter(stripped_word: str):
+#     if "-" in stripped_word:
+#         word_list = stripped_word.split("-")
+#     elif "_" in stripped_word:
+#         word_list = stripped_word.split("_")
+#     elif "." in stripped_word:
+#         word_list = stripped_word.split(".")
+#     elif ',' in stripped_word:
+#         word_list = stripped_word.split(",")
+#     return word_list
 
-print(compound_word("cake-boy,yam.dog"))
+# print(compound_word("cake-boy,yam.dog"))
+import httpx
+import asyncio
+async def prompt_guard_node(state):
+    async with httpx.AsyncClient(timeout=None) as client:
+        result = await client.post(
+            "http://127.0.0.1:8000/v1/safeagent/prompt",
+            json={
+                "user_id": "test_id",
+                "role": "user",
+                "prompt": state
+            }
+
+        )
+    return result.json()
+# result = await prompt_guard_node("whats up")
+async def tool_guard_node(state):
+    async with httpx.AsyncClient(timeout=None) as client:
+        result = await client.post(
+            "http://127.0.0.1:8000/v1/safeagent/tool_output",
+            json={
+                "role": "tool",
+                "tool_call_id": "call_vctR_hungary_092",
+                "name": "search_pinecone_db",
+                "content": state
+            }
+
+        )
+    return result.json()
+async def output_guard_node(state):
+    async with httpx.AsyncClient(timeout=None) as client:
+        result = await client.post(
+            "http://127.0.0.1:8000/v1/safeagent/final_output",
+            json={
+                "output": state
+            }
+
+        )
+    return result.json()
+print(asyncio.run(output_guard_node("whats up ? how are you doing today this is my credit card number 4444-5555-6666-6767")))

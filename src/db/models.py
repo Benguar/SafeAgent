@@ -12,6 +12,7 @@ class Prompt_logs(Base):
     __tablename__ = "prompt_logging"
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True,nullable=False,default=uuid7)
     user_id: Mapped[str] = mapped_column(nullable=False)
+    chat_id: Mapped[str] = mapped_column(nullable=False)
     role: Mapped[str] = mapped_column(nullable=False)
     prompt: Mapped[str] = mapped_column(nullable=False)
     decision: Mapped[str] = mapped_column(nullable=False)
