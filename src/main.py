@@ -30,7 +30,9 @@ async def lifespan(app: FastAPI):
         app.state.vectorizer = joblib.load("ml_model/vectorizer.pkl")
         app.state.bloom_filter = Bloom.load("words/words.bloom", hash_func= bloom_hash)
         app.state.sanitize_policy = sanitize_policy
+        # transport = httpx.AsyncHTTPTransport(uds='/tmp/opa.sock')
         limits = httpx.Limits(keepalive_expiry=120.0)
+        # app.state.http_client = httpx.AsyncClient(transport=transport,limits=limits)
         app.state.http_client = httpx.AsyncClient(limits=limits)
         await create_table()
         yield

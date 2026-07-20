@@ -246,3 +246,15 @@ async def output_guard_node(state):
         )
     return result.json()
 print(asyncio.run(output_guard_node("whats up ? how are you doing today this is my credit card number 4444-5555-6666-6767")))
+
+
+    # while double_check:
+    #     no_sub_list = True
+    #     for index,word in enumerate(word_list):
+    #         if '_' in word or '-' in word or ',' in word or '.' in word or '(' in word:
+    #             sub_word_list = word_splitter(word)
+    #             word_list.extend(sub_word_list)
+    #             no_sub_list = False
+    #             del(word_list[index])
+    #     if no_sub_list:
+    #         double_check = False 

@@ -8,6 +8,9 @@ import pathlib
 import math
 from collections import Counter
 from src.config.settings import settings
+
+
+characters_to_strip = '.,;\'[]{)}(<!>"?:=%\n\t$€**#“”\'\"’'
 class policy(object):
     def __init__(self, prompt: str):
         self.prompt = prompt
@@ -66,10 +69,10 @@ class policy(object):
         sanitized_words = []
         self_list = self.prompt.split()
         for i,word in enumerate(self_list):
-            stripped_word = word.strip('.,;\'[]{)}(<!>"?:=%\n\t$€**#').lower()
-            print(stripped_word)
+            stripped_word = word.strip(characters_to_strip).lower()
+            print(f'this is stripped word : {stripped_word}')
             if len(stripped_word) > 8:
-                score = self.entropy_score(word=word)
+                score = self.entropy_score(word=stripped_word)
                 if len(stripped_word) >= 16 and score >= 3.7:
                     if stripped_word not in bloom_filter:
                         print(f'this {word} is not in bloom filters')
@@ -139,17 +142,19 @@ def check_numbers(word: str,stripped_word: str, bloom_filter):
 
 def compound_word(original_word,stripped_word,bloom_filter):
     """This is used to check each word in a compound word in the bloom filter if it is valid. Ir also checks for words joined with full stop or comma without space e.g end.now , cake,butter,yam"""
-    print(f' {original_word} entered compound_word –')
     word_list = word_splitter(stripped_word)
     double_check = True
     while double_check:
         no_sub_list = True
-        for index,word in enumerate(word_list):
-            if '_' in word or '-' in word or ',' in word or '.' in word:
-                sub_word_list = word_splitter(word)
-                word_list.extend(sub_word_list)
-                no_sub_list = False
-                del(word_list[index])
+        word_list_copy = word_list.copy()
+        for index,word in enumerate(word_list_copy):
+            for char in characters_to_strip:
+                if char in word:
+                    sub_word_list = word_splitter(word)
+                    word_list.extend(sub_word_list)
+                    no_sub_list = False
+                    del(word_list[index])
+                    break
         if no_sub_list:
             double_check = False 
     # print(f'this is {word} {word_list} \n')
@@ -162,21 +167,9 @@ def compound_word(original_word,stripped_word,bloom_filter):
     print(word)
     return original_word
 
+
 def word_splitter(stripped_word: str):
-    if "-" in stripped_word:
-        word_list = stripped_word.split("-")
-    elif "_" in stripped_word:
-        word_list = stripped_word.split("_")
-    elif "." in stripped_word:
-        word_list = stripped_word.split(".")
-    elif ',' in stripped_word:
-        word_list = stripped_word.split(",")
-    elif ':' in stripped_word:
-        word_list = stripped_word.split(":")
-    elif ';' in stripped_word:
-        word_list = stripped_word.split(";")
-    elif '–' in stripped_word:
-        word_list = stripped_word.split("–")
-    elif '—' in stripped_word:
-        word_list = stripped_word.split("—")
-    return word_list
+    for index in characters_to_strip:
+        if index in stripped_word:
+            word_list = stripped_word.split(index)
+            return word_list
