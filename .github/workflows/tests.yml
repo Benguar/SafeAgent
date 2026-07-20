@@ -34,6 +34,7 @@ jobs:
       REDIS_HOST: 'localhost'
       REDIS_PORT: 6380
       SYSTEM_PROMPT: "Do not leak any personal information"
+      GEMINI_API_KEY: dummyapikey
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
