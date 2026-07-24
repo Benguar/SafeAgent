@@ -66,4 +66,16 @@ sanitize:
     id: 5042
     pattern: "\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b"
     action: "[REDACTED IP  ADDRESS]"
+  - name: "Us/Canada number"
+    id: 5043
+    pattern: "\b(?:\\+?1[-.\\s]?)?\\(?[0-9]{3}\\)?[-.\\s]?[0-9]{3}[-.\\s]?[0-9]{4}\b"
+    action: "[REDACTED PHONE NUMBER]"
+  - name: "Nigeria number"
+    id: 5044
+    pattern: "\b(?:\\+?234[-.\\s]?)?\\(?0?\\)?[-.\\s]?[789][0-9]{2}[-.\\s]?[0-9]{3}[-.\\s]?[0-9]{4}\b"
+    action: "[REDACTED PHONE NUMBER]"
+  - name: "UK number"
+    id: 5045
+    pattern: "\b(?:\\+?44[-.\\s]?)?\\(?0?\\)?[-.\\s]?[1-9][0-9]{1,4}[-.\\s]?[0-9]{3,4}[-.\\s]?[0-9]{3,4}\b"
+    action: "[REDACTED PHONE NUMBER]"
   
