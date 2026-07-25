@@ -64,7 +64,9 @@ async def prompt_guard_node(state: ChatState):
         )
     output = result.json()
     state['block'] = output['block']
-    prompt.content = output['prompt']
+    # prompt.content = output['prompt']
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC+0")
+    prompt.content = message =f"METADATA\nTemporal Anchor: {timestamp}\n\nMessage: {output['prompt']}"
     print(f'⏰-----------------------------{state["time"]-time.time()}------------------------------')
     return state
 def prompt_checker(state:ChatState):
@@ -152,7 +154,8 @@ async def main():
     first_turn = True
     while True:
         prompt = input("You:   ")
-        message = {'role':'user','content': f"METADATA\nTemporal Anchor: {timestamp}\n\nMessage: {prompt}"}
+        # message = {'role':'user','content': f"METADATA\nTemporal Anchor: {timestamp}\n\nMessage: {prompt}"}
+        message = {'role':'user','content': f"{prompt}"}
         if first_turn:
             initial_state.append(message)
             first_turn = False
